@@ -1,4 +1,4 @@
-# sr4rs
+# SR4RS
 
 ## Super Resolution for Remote Sensing
 
