@@ -5,7 +5,7 @@ You can add your own models, cost functions, feel free to open a PR!
 
 ## Super Resolution for Remote Sensing
 
-This work has been supported by the Programme National de Télédétection Spatiale (PNTS, http://programmes.insu.cnrs.fr/pnts/), grant n° PNTS-2020-07 
+This work has been supported by the Programme National de Télédétection Spatiale ([PNTS](http://programmes.insu.cnrs.fr/pnts/)), grant n° PNTS-2020-07 
 
 <img src ="doc/logos.jpg" />
 
