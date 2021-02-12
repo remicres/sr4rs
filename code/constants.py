@@ -1,0 +1,9 @@
+factors = [1, 2, 4]
+pads = [32, 64, 128, 256, 512]
+gen_scope = "gen"
+dis_scope = "dis"
+outputs_prefix = "output_"
+lr_key = "lr"
+hr_key = "hr"
+lr_input_name = "lr_input"
+hr_input_name = "hr_input"
