@@ -129,5 +129,5 @@ def nice_preview(x):
     means = tf.math.reduce_mean(x, axis=-1)
     mins = means - 2 * stds
     maxs = means + 2 * stds
-    return tf.cast(255 * tf.divide(x - mins, maxs - mins), tf.uint8)
+    return tf.cast(255 * tf.divide(tf.math.subtract(x, mins), maxs - mins), tf.uint8)
 
