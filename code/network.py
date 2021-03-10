@@ -125,9 +125,10 @@ def nice_preview(x):
     Keep only first 3 bands --> RGB
     """
     x = x[:, :, :, :3]
-    stds = tf.math.reduce_std(x, axis=-1)
-    means = tf.math.reduce_mean(x, axis=-1)
+    axis = [0, 1, 2]
+    stds = tf.math.reduce_std(x, axis=axis, keepdims=True)
+    means = tf.math.reduce_mean(x, axis=axis, keepdims=True)
     mins = means - 2 * stds
     maxs = means + 2 * stds
-    return tf.cast(255 * tf.divide(tf.math.subtract(x, mins), maxs - mins), tf.uint8)
+    return tf.cast(255 * tf.divide(x - mins, maxs - mins), tf.uint8)
 
