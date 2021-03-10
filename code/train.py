@@ -212,7 +212,7 @@ def main(unused_argv):
             return "_{}{}".format(key, value)
 
         now = datetime.datetime.now()
-        summaries_fn = "SR4RS_"
+        summaries_fn = "SR4RS"
         summaries_fn += _append_desc("E", params.epochs)
         summaries_fn += _append_desc("B", params.batchsize)
         summaries_fn += _append_desc("LR", params.adam_lr)
