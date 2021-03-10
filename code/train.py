@@ -70,6 +70,8 @@ def main(unused_argv):
     logging.info("VGG features         : " + str(params.vggfeatures))
     logging.info("Base depth           : " + str(params.depth))
     logging.info("Number of ResBlocks  : " + str(params.nresblocks))
+    logging.info("Low-res image scale  : " + str(params.lr_scale))
+    logging.info("Hi-res image scale   : " + str(params.hr_scale))
     logging.info("********************************************")
 
     # Preview
@@ -111,7 +113,7 @@ def main(unused_argv):
         if lr_image_for_prev is not None:
             for factor in constants.factors:
                 prev = network.nice_preview(gen[factor], refs=[lr_image_for_prev])
-                tf.compat.v1.summary.image("preview_factor{}".format(factor), prev, collections=['per_epoch'])
+                tf.compat.v1.summary.image("preview_factor{}".format(factor), prev, collections=[constants.epoch_key])
 
         # discriminator
         dis_real = discriminator(hr_images=hr_images_real)
@@ -162,12 +164,14 @@ def main(unused_argv):
             tf.compat.v1.summary.scalar(name, value, collections)
             return value
 
-        gen_loss = _new_loss(params.ganweight * gen_loss_gan, "gen_loss_gan")
-        gen_loss += _new_loss(params.vggweight * gen_loss_vgg, "gen_loss_vgg")
-        pretrain_loss = _new_loss(params.l1weight * gen_loss_l1, "gen_loss_l1", ["pretrain"])
-        pretrain_loss += _new_loss(params.l2weight * gen_loss_l2, "gen_loss_l2", ["pretrain"])
+        train_collections = [constants.train_key]
+        all_collections = [constants.pretrain_key, constants.train_key]
+        gen_loss = _new_loss(params.ganweight * gen_loss_gan, "gen_loss_gan", train_collections)
+        gen_loss += _new_loss(params.vggweight * gen_loss_vgg, "gen_loss_vgg", train_collections)
+        pretrain_loss = _new_loss(params.l1weight * gen_loss_l1, "gen_loss_l1", all_collections)
+        pretrain_loss += _new_loss(params.l2weight * gen_loss_l2, "gen_loss_l2", all_collections)
         gen_loss += pretrain_loss
-        dis_loss = _new_loss(dis_loss, "dis_loss")
+        dis_loss = _new_loss(dis_loss, "dis_loss", train_collections)
 
         # discriminator optimizer
         dis_optim = tf.compat.v1.train.AdamOptimizer(learning_rate=params.adam_lr, beta1=params.adam_b1)
@@ -192,9 +196,9 @@ def main(unused_argv):
             train_nodes.append(update_losses)
         train_op = tf.group(train_nodes, name="optimizer")
 
-        merged_losses_summaries = tf.compat.v1.summary.merge_all()
-        merged_pretrain_summaries = tf.compat.v1.summary.merge_all(key='pretrain')
-        merged_preview_summaries = tf.compat.v1.summary.merge_all(key='per_epoch')
+        merged_losses_summaries = tf.compat.v1.summary.merge_all(key=constants.train_key)
+        merged_pretrain_summaries = tf.compat.v1.summary.merge_all(key=constants.pretrain_key)
+        merged_preview_summaries = tf.compat.v1.summary.merge_all(key=constants.epoch_key)
 
         init = tf.global_variables_initializer()
         saver = tf.compat.v1.train.Saver(max_to_keep=5)
@@ -220,6 +224,8 @@ def main(unused_argv):
         summaries_fn += _append_desc("Loss", params.losstype)
         summaries_fn += _append_desc("D", params.depth)
         summaries_fn += _append_desc("RB", params.nresblocks)
+        summaries_fn += _append_desc("LRSC", params.lr_scale)
+        summaries_fn += _append_desc("HRSC", params.hr_scale)
         if params.pretrain:
             summaries_fn += "pretrained"
         summaries_fn += "_{}{}_{}h{}min".format(now.day, now.strftime("%b"), now.hour, now.minute)
