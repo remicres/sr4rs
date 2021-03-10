@@ -112,7 +112,7 @@ def main(unused_argv):
             tf.identity(gen[1][:, pad:-pad, pad:-pad, :], name="{}{}".format(constants.outputs_prefix, pad))
         if lr_image_for_prev is not None:
             for factor in constants.factors:
-                prev = network.nice_preview(gen[factor], refs=[lr_image_for_prev])
+                prev = network.nice_preview(gen[factor])
                 tf.compat.v1.summary.image("preview_factor{}".format(factor), prev, collections=[constants.epoch_key])
 
         # discriminator
@@ -212,7 +212,7 @@ def main(unused_argv):
             return "_{}{}".format(key, value)
 
         now = datetime.datetime.now()
-        summaries_fn = "SR4RS_"
+        summaries_fn = "SR4RS"
         summaries_fn += _append_desc("E", params.epochs)
         summaries_fn += _append_desc("B", params.batchsize)
         summaries_fn += _append_desc("LR", params.adam_lr)

@@ -119,23 +119,16 @@ def generator(lr_image, scope, nchannels, nresblocks, dim):
         return hr_images
 
 
-def nice_preview(x, refs):
+def nice_preview(x):
     """
     Beautiful previews
     Keep only first 3 bands --> RGB
     """
-    bands = [0, 1, 2]
-
-    _mean = np.zeros(3)
-    _std = np.zeros(3)
-    _ninv = 1.0 / float(len(refs))
-    for ref in refs:
-        _mean += _ninv * np.asarray([np.mean(ref[0, :, :, i]) for i in bands])
-        _std += _ninv * np.asarray([np.std(ref[0, :, :, i]) for i in bands])
-    _min = [__mean - 2 * __std for __mean, __std in zip(_mean, _std)]
-    _max = [__mean + 2 * __std for __mean, __std in zip(_mean, _std)]
-    return tf.cast(255 * tf.stack(
-        [1.0 / (__max - __min) * (tf.clip_by_value(x[:, :, :, i], __min, __max) - __min) for i, __min, __max in
-         zip(bands, _min, _max)],
-        axis=3), tf.uint8)
+    x = x[:, :, :, :3]
+    axis = [0, 1, 2]
+    stds = tf.math.reduce_std(x, axis=axis, keepdims=True)
+    means = tf.math.reduce_mean(x, axis=axis, keepdims=True)
+    mins = means - 2 * stds
+    maxs = means + 2 * stds
+    return tf.cast(255 * tf.divide(x - mins, maxs - mins), tf.uint8)
 
