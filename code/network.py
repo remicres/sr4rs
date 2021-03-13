@@ -1,5 +1,4 @@
 import tensorflow as tf
-import numpy as np
 from functools import partial
 from ops import conv, lrelu, conv2d_downscale2d, upscale2d_conv2d, blur2d, pixel_norm
 from ops import minibatch_stddev_layer

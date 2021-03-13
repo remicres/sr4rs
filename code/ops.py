@@ -147,7 +147,7 @@ def _downscale2d(x, factor=2, gain=1):
     if gain != 1:
         x *= gain
 
-    if factor == 2 and x.dtype == tf.float32:
+    if factor == 2:
         return _blur2d(x, stride=factor)
 
     if factor == 1:
