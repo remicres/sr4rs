@@ -98,12 +98,14 @@ def main(unused_argv):
 
         lr_image = _get_normalized_input(constants.lr_key, params.lr_scale, constants.lr_input_name)
         hr_image = _get_normalized_input(constants.hr_key, params.hr_scale, constants.hr_input_name)
+
+        # model
         hr_nch = ds.output_shapes[constants.hr_key][-1]
-        generator = partial(network.generator, scope=constants.gen_scope, nchannels=hr_nch, nresblocks=params.nresblocks,
-                            dim=params.depth)
+        generator = partial(network.generator, scope=constants.gen_scope, nchannels=hr_nch,
+                            nresblocks=params.nresblocks, dim=params.depth)
         discriminator = partial(network.discriminator, scope=constants.dis_scope, dim=params.depth)
 
-        hr_images_real = {factor: downscale2d(blur2d(hr_image), factor=factor) for factor in constants.factors}
+        hr_images_real = {factor: downscale2d(hr_image, factor=factor) for factor in constants.factors}
         hr_images_fake = generator(lr_image)
 
         # model outputs
