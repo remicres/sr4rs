@@ -20,16 +20,19 @@ parser = argparse.ArgumentParser()
 # Paths
 parser.add_argument("--lr_patches", help="LR patches images list", required=True, nargs='+', default=[])
 parser.add_argument("--hr_patches", help="HR patches images list", required=True, nargs='+', default=[])
-parser.add_argument("--preview", help="LR image for preview")
-parser.add_argument("--logdir", help="output log directory")
-parser.add_argument("--save_ckpt", help="save the checkpoint", required=True)
-parser.add_argument("--load_ckpt", help="start from a given checkpoint")
-parser.add_argument("--savedmodel", help="create a SavedModel at the end")
-parser.add_argument("--vggfile", help="vgg19.npy file")
+parser.add_argument("--preview", help="LR image for preview (must have the same dynamic as lr_patches)")
+parser.add_argument("--logdir", help="Output directory for tensorboard summaries (must be an existing directory)")
+parser.add_argument("--save_ckpt", help="Prefix for the checkpoints that will be saved", required=True)
+parser.add_argument("--load_ckpt", help="Path to an existing checkpoint (provide the full path without the .meta "
+                                        "extension)")
+parser.add_argument("--savedmodel", help="Create a SavedModel after the training step (must be a new directory)")
+parser.add_argument("--vggfile", help="Path to the vgg19.npy file")
 
 # Images scaling
-parser.add_argument("--lr_scale", type=float, default=0.0001, help="LR image scaling")
-parser.add_argument("--hr_scale", type=float, default=0.0001, help="HR image scaling")
+parser.add_argument("--lr_scale", type=float, default=0.0001, help="LR image scaling. Set a value such as the scaled "
+                                                                   "pixels values are mostly in the [0,1] range.")
+parser.add_argument("--hr_scale", type=float, default=0.0001, help="HR image scaling. Set a value such as the scaled "
+                                                                   "pixels values are mostly in the [0,1] range.")
 
 # Parameters
 parser.add_argument("--previews_step", type=int, default=200, help="Number of steps between each preview summary")
@@ -40,18 +43,20 @@ parser.add_argument("--batchsize", type=int, default=4, help="batch size")
 parser.add_argument("--adam_lr", type=float, default=0.001, help="Adam learning rate")
 parser.add_argument("--adam_b1", type=float, default=0.0, help="Adam beta1")
 parser.add_argument("--l1weight", type=float, default=0, help="L1 loss weight")
-parser.add_argument("--l2weight", type=float, default=100.0, help="L2 loss weight")
-parser.add_argument("--vggweight", type=float, default=1.0, help="VGG loss weight")
-parser.add_argument('--vggfeatures', default="vgg54", const="vgg54", nargs="?",
+parser.add_argument("--l2weight", type=float, default=1000.0, help="L2 loss weight")
+parser.add_argument("--vggweight", type=float, default=0.00001, help="VGG loss weight")
+parser.add_argument('--vggfeatures', default="1234", const="1234", nargs="?",
                     choices=["vgg54", "vgg54lin", "vgg344454", "1234lin", "1234"])
 parser.add_argument("--ganweight", type=float, default=1.0, help="GAN loss weight")
 parser.add_argument('--losstype', default="WGAN-GP", const="WGAN-GP", nargs="?",
                     choices=["WGAN-GP", "LSGAN"], help="GAN loss type")
 parser.add_argument('--streaming', dest='streaming', action='store_true',
-                    help="Streaming reads patches from the file system. Consumes low RAM, but stresses FS")
+                    help="Streaming reads patches from the file system. Consumes low RAM amount, but performs a lot of"
+                         " filesystem reading operations.")
 parser.set_defaults(streaming=False)
 parser.add_argument('--pretrain', dest='pretrain', action='store_true',
-                    help="Pre-train the network using only L1 and L2 (use l1/l2weight)")
+                    help="Pre-train the network without GAN losses, using only L1 and/or L2 (depending of l1weight "
+                         "and l2weight)")
 parser.set_defaults(pretrain=False)
 params = parser.parse_args()
 
@@ -59,15 +64,17 @@ step = 0
 
 def main(unused_argv):
     logging.info("************ Parameters summary ************")
-    logging.info("N epochs             : " + str(params.epochs))
+    logging.info("Number of epochs     : " + str(params.epochs))
     logging.info("Batch size           : " + str(params.batchsize))
     logging.info("Adam learning rate   : " + str(params.adam_lr))
     logging.info("Adam beta1           : " + str(params.adam_b1))
-    logging.info("L1 weight            : " + str(params.l1weight))
-    logging.info("L2 weight            : " + str(params.l2weight))
-    logging.info("GAN weight           : " + str(params.ganweight))
-    logging.info("VGG weight           : " + str(params.vggweight))
-    logging.info("VGG features         : " + str(params.vggfeatures))
+    logging.info("L1 loss weight       : " + str(params.l1weight))
+    logging.info("L2 loss weight       : " + str(params.l2weight))
+    logging.info("GAN loss weight      : " + str(params.ganweight))
+    if params.vggfile is not None:
+        logging.info("VGG file             : " + str(params.vggfile))
+        logging.info("VGG loss weight      : " + str(params.vggweight))
+        logging.info("VGG features         : " + str(params.vggfeatures))
     logging.info("Base depth           : " + str(params.depth))
     logging.info("Number of ResBlocks  : " + str(params.nresblocks))
     logging.info("Low-res image scale  : " + str(params.lr_scale))
