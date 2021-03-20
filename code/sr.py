@@ -25,14 +25,16 @@ encodings = {"auto": get_encoding,
              "int16": lambda x: otbApplication.ImagePixelType_int16,
              "float": lambda x: otbApplication.ImagePixelType_float}
 
-parser.add_argument("--input", help="Input LR image ", required=True)
-parser.add_argument("--savedmodel", help="Input SavedModel ", required=True)
+parser.add_argument("--input", help="Input LR image. Must be in the same dynamic as the lr_patches used in the "
+                                    "train.py application.", required=True)
+parser.add_argument("--savedmodel", help="Input SavedModel (provide the path to the folder).", required=True)
 parser.add_argument("--output", help="Output HR image", required=True)
 parser.add_argument('--encoding', type=str, default="auto", const="auto", nargs="?", choices=encodings.keys(),
                     help="Output HR image encoding")
 parser.add_argument('--pad', type=int, default=64, const=64, nargs="?", choices=constants.pads,
                     help="Margin size for blocking artefacts removal")
-parser.add_argument('--ts', default=512, type=int, help="Tile size")
+parser.add_argument('--ts', default=512, type=int, help="Tile size. Tune this to process larger output image chunks, "
+                                                        "and speed up the process.")
 params = parser.parse_args()
 
 
