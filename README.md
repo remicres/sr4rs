@@ -43,4 +43,4 @@ Here is a summary of the steps to follow.
 2. Run `train.py` on your patches images, and generate a SavedModel
 3. Use `sr.py` on LR image using the previously generated SavedModel
 
-For more details, see the [documentation](doc/HOW_TO.md).
+For more details, see the [documentation](doc/HOW_TO.md) and check the [pre-trained models](doc/PRETRAINED_MODELS.md).
