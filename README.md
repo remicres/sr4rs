@@ -38,6 +38,35 @@ Blog post on [MDL4EO](https://mdl4eo.irstea.fr/2019/03/29/enhancement-of-sentine
 
 ## How to use?
 
+### Quick HR image generation using pre-trained model
+
+1. Get the latest OTBTF docker image and enter the docker image. Use the nice and lightweight builds done by Vincent@LaTelescop. Here is an example with the otbtf gpu:2.3-dev image, using NVIDIA runtime:
+```
+docker run -ti --runtime=nvidia registry.gitlab.com/latelescop/docker/otbtf/gpu:2.3-dev bash
+```
+
+2. Download and unzip a pre-trained SavedModel (see [this section](doc/PRETRAINED_MODELS.md) to see available pre-trained models)
+```
+wget https://nextcloud.inrae.fr/s/JLsak68H2KYzPyG/download
+unzip download
+```
+
+3. Clone SR4RS
+```
+git clone https://github.com/remicres/sr4rs.git
+```
+
+4. Use SR4RS to create an HR image (the considered pre-trained model runs on a Sentinel-2 image, 4-channels ordered as Red, Green, Blue, Near infrared). Just download a Sentinel-2 image from ESA hub or elsewhere, then concatenate the bands in this order (for that you can use the OTB application named `otbcli_ConcatenateImages`).
+```
+cd sr4rs/code
+python sr4rs/code/sr.py \
+--savedmodel sr4rs_mini-mtp-2.5_savedmodel \
+--input /path/to/some/S2_image/stacked_channels_4328_10m.tif \
+--output test.tif
+```
+
+### Train a model
+
 Here is a summary of the steps to follow.
 1. Generate patches images using the `PatchesExtraction` application from OTBTF, from one low-res image (LR) and one high-res image (HR)
 2. Run `train.py` on your patches images, and generate a SavedModel
