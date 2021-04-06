@@ -40,7 +40,7 @@ Blog post on [MDL4EO](https://mdl4eo.irstea.fr/2019/03/29/enhancement-of-sentine
 
 ### Quick HR image generation using pre-trained model
 
-1. Get the latest OTBTF docker image and enter the docker image. Use the nice and lightweight builds done by Vincent@LaTelescop. Here is an example with the otbtf gpu:2.3-dev image, using NVIDIA runtime:
+1. Get the latest OTBTF docker image and enter the docker image. Use the nice and lightweight builds done by Vincent@LaTelescop (see [here](https://gitlab.com/latelescop/docker/otbtf/container_registry/) to see all flavours). Here is an example with the otbtf gpu:2.3-dev image, using NVIDIA runtime:
 ```
 docker run -ti --runtime=nvidia registry.gitlab.com/latelescop/docker/otbtf/gpu:2.3-dev bash
 ```
