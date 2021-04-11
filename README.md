@@ -58,7 +58,6 @@ git clone https://github.com/remicres/sr4rs.git
 
 4. Use SR4RS to create an HR image (the considered pre-trained model runs on a Sentinel-2 image, 4-channels ordered as Red, Green, Blue, Near infrared). Just download a Sentinel-2 image from ESA hub or elsewhere, then concatenate the bands in this order (for that you can use the OTB application named `otbcli_ConcatenateImages`).
 ```
-cd sr4rs/code
 python sr4rs/code/sr.py \
 --savedmodel sr4rs_mini-mtp-2.5_savedmodel \
 --input /path/to/some/S2_image/stacked_channels_4328_10m.tif \
