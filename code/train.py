@@ -198,7 +198,7 @@ def main(unused_argv):
 
         pretrain_op = tf.compat.v1.train.AdamOptimizer(learning_rate=params.adam_lr).minimize(pretrain_loss)
         train_nodes = [gen_train]
-        if params.losstype is "LSGAN":
+        if params.losstype == "LSGAN":
             ema = tf.train.ExponentialMovingAverage(decay=0.995)
             update_losses = ema.apply([dis_loss, gen_loss])
             train_nodes.append(update_losses)
