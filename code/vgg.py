@@ -1,4 +1,4 @@
-import tensorflow as tf
+from tricks import tf
 import logging
 import numpy as np
 

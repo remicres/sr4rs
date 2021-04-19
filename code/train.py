@@ -1,5 +1,5 @@
 # Imports
-import tensorflow as tf
+from tricks import tf
 import datetime
 import argparse
 from functools import partial
@@ -92,7 +92,7 @@ def main(unused_argv):
                                                             constants.lr_key: params.lr_patches},
                                             use_streaming=params.streaming)
         tf_ds = ds.get_tf_dataset(batch_size=params.batchsize)
-        iterator = tf.compat.v1.data.Iterator.from_structure(tf_ds.output_types)
+        iterator = tf.compat.v1.data.Iterator.from_structure(ds.output_types)
         iterator_init = iterator.make_initializer(tf_ds)
         dataset_inputs = iterator.get_next()
 
@@ -300,5 +300,4 @@ def main(unused_argv):
 
 
 if __name__ == "__main__":
-    tf.compat.v1.add_check_numerics_ops()
     tf.compat.v1.app.run(main)
