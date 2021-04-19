@@ -1,4 +1,4 @@
-import tensorflow as tf
+from tricks import tf
 from functools import partial
 import numpy as np
 
