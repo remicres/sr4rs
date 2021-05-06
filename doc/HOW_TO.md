@@ -52,7 +52,7 @@ Typically, you need to create patches for the low-resolution image (LR) and for 
 Here is an example using the OTB command line interface:
 
 ```
-OTBTF_NB_SOURCE=2 otbcli_PatchesExtraction \
+OTB_TF_NBSOURCES=2 otbcli_PatchesExtraction \
 -source1.il Sentinel-2_B4328_10m.tif \
 -source1.patchsizex 32 \
 -source1.patchsizey 32 \
