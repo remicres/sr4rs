@@ -49,8 +49,8 @@ docker run -ti --runtime=nvidia registry.gitlab.com/latelescop/docker/otbtf/gpu:
 
 2. Download and unzip a pre-trained SavedModel (see [this section](doc/PRETRAINED_MODELS.md) to see available pre-trained models)
 ```
-wget https://nextcloud.inrae.fr/s/JLsak68H2KYzPyG/download
-unzip download
+wget https://nextcloud.inrae.fr/s/boabW9yCjdpLPGX/download/sr4rs_sentinel2_bands4328_france2020_savedmodel.zip
+unzip sr4rs_sentinel2_bands4328_france2020_savedmodel.zip
 ```
 
 3. Clone SR4RS
@@ -61,7 +61,7 @@ git clone https://github.com/remicres/sr4rs.git
 4. Use SR4RS to create an HR image (the considered pre-trained model runs on a Sentinel-2 image, 4-channels ordered as Red, Green, Blue, Near infrared). Just download a Sentinel-2 image from ESA hub or elsewhere, then concatenate the bands in this order (for that you can use the OTB application named `otbcli_ConcatenateImages`).
 ```
 python sr4rs/code/sr.py \
---savedmodel sr4rs_mini-mtp-2.5_savedmodel \
+--savedmodel sr4rs_sentinel2_bands4328_france2020_savedmodel \
 --input /path/to/some/S2_image/stacked_channels_4328_10m.tif \
 --output test.tif
 ```
