@@ -1,16 +1,25 @@
-# SR4RS Pre-models
-
-This section in currently in contruction.
+# SR4RS Pre-trained models
 
 ## Notes
 
-- The checkpoints can be used to start the training in `train.py` (use the `--load_ckpt` parameter). You can retrieve the model parameters values from the checkpoint file name.
+- The checkpoints can be used to start the training in `train.py` (use the `--load_ckpt` parameter). You can retrieve the training parameters values from the checkpoint file name.
 - The SavedModels can be used directly on remote sensing images from `sr.py` to generate high-resolution images.
 - Before applying a model, check that your input image has the same spectral content/bands + in the same order as indicated in the table below. 
 
-## Models
+## Pre-trained model for Sentinel-2
 
-| Model name | Nb. patches used | Area | Source Sensor | Target Sensor | L1 loss weight | L2 loss weight | VGG loss weight (feats) | Loss type | Depth | Nb. res. blocks | Comment | Links |
-| ---------- | ---------------- | -----| -------------- | ------------ | -------------- | -------------- | ----------------------- | --------- | ----- | --------------- | ------- | ----- |
-| mini-mtp-2.5 | 3984 | Montpellier area, Fr. | Sentinel-2 (B4328, TOC reflectance) from THEIA Land data center | Spot-7 (B1234, corrected) | 0.0 | 1000.0 | 0.00001 ("1234") | WGAN-GP | 64 | 16 | Quickly trained model, not very nice. For testing purposes. You can apply it on Sentinel-2 images from ESA hub, though it was trained on a TOC reflectance product. | [checkpoint](https://nextcloud.inrae.fr/s/MWaqnKCsRmkQmtm) / [SavedModel](https://nextcloud.inrae.fr/s/JLsak68H2KYzPyG) |
+The model aims to upscale Sentinel-2 images from 10 meters to 2.5 meters, with the **four spectral bands ordered in the following**:
+| order | band | 
+| ----- | ---- |
+| 1     | red (B4) |
+| 2     | green (B3) |
+| 3     | blue (B2) |
+| 4     | near infrared (B8) |
 
+The model was trained from 250 different Spot-6 and Spot-7 scenes covering the entire France Mainland, acquired during the year 2020, from march to october, and the Sentinel-2 images acquired close to the same day. We used TOC Sentinel-2 products from the THEIA Land data center.
+Spot-6 and Spot-7 images were interpolated at 2.5 meters and radiometrically calibrated to match the Sentinel-2 radiometry.
+Around 150k patches were used to train the model.
+
+You can **download** the pre-trained model here:
+- [SavedModel](https://nextcloud.inrae.fr/s/boabW9yCjdpLPGX)
+- [Checkpoint](https://nextcloud.inrae.fr/s/LG5e5t6jdLHzAe4)
