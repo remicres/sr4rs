@@ -20,10 +20,10 @@ def get_encoding():
 
 
 encodings = {"auto": get_encoding,
-             "uint8": lambda x: otbApplication.ImagePixelType_uint8,
-             "uint16": lambda x: otbApplication.ImagePixelType_uint16,
-             "int16": lambda x: otbApplication.ImagePixelType_int16,
-             "float": lambda x: otbApplication.ImagePixelType_float}
+             "uint8": lambda: otbApplication.ImagePixelType_uint8,
+             "uint16": lambda: otbApplication.ImagePixelType_uint16,
+             "int16": lambda: otbApplication.ImagePixelType_int16,
+             "float": lambda: otbApplication.ImagePixelType_float}
 
 parser.add_argument("--input", help="Input LR image. Must be in the same dynamic as the lr_patches used in the "
                                     "train.py application.", required=True)
