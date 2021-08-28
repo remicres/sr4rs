@@ -52,6 +52,7 @@ if __name__ == "__main__":
     encoding = params.encoding
     if encoding == "auto":
         encoding = encodings[get_encoding_name()]
+    logging.info("Using encoding %s", encoding)
 
     # call otbtf
     logging.info("Receptive field: {}, Expression field: {}".format(rfield, efield))
