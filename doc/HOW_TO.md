@@ -86,11 +86,11 @@ Here are the parameters of the application:
 - `load_ckpr` load the checkpoint here instead of training from scratch
 - `savedmodel` the output SavedModel that will be generated, and that will be used later for generating fake HR images
 - `vggfile` path to the VGG weights (`vgg19.npy` file, available everywhere on the internet)
-- `lr_scale` to must provide a scaling coefficient that will scale your LR images between [0, 1] (For instance, 0.0001 is good for 12 bits sensors. You can use `gdalinfo -stats` to check what is the max value in your images)
-- `hr_scale` to must provide a scaling coefficient that will scale your HR images between [0, 1] (Like `lr_scale`)
+- `lr_scale` set this coefficient to scale your LR images between [0, 1] at model input. The coefficient multiplies the original image. For instance, 0.0001 is good for 12 bits sensors. You can use `gdalinfo -stats` to check what is the max value in your images.
+- `hr_scale` set this coefficient to scale your HR images between [0, 1] (Like `lr_scale`)
 - `depth` base depth of the network
 - `nresblocks` number of residual blocks in the network
-- `batchsize` batch size. Must be >= 3 because we use mini-batch statistics for training discriminator.
+- `batchsize` batch size. Must be >= 3 because we use mini-batch statistics for training discriminator (see Karas et al).
 - `adam_lr` adam learning rate
 - `adam_b1` adam beta 1
 - `l1weight` L1 norm weight in the loss function
@@ -115,7 +115,7 @@ python train.py \
 This gave me some cool results, but you might find some settings better suited to your images.
 The important thing is, after the training is complete, the SavedModel will be generated in `/path/to/savedmodel`.
 Take care not to use an existing folder for `--savedmodel`, else TensorFlow will cancel the save. You must provide a non-existing folder for this one.
-Note that you can provide multiple HR and LR patches: just be sure that there is the same number of patches images, in the same order. Une the `--streaming` option if this takes too much RAM.
+Note that you can provide multiple HR and LR patches: just be sure that there is the same number of patches images, in the same order. Use the `--streaming` option if this takes too much RAM.
 
 ### Step 3: generate your fake HR images
 
