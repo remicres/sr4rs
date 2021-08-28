@@ -6,25 +6,15 @@ import logging
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.WARNING,
                     datefmt='%Y-%m-%d %H:%M:%S')
 
+encodings = {"unsigned_char": otbApplication.ImagePixelType_uint8,
+             "short": otbApplication.ImagePixelType_int16,
+             "unsigned_short": otbApplication.ImagePixelType_uint16,
+             "int": otbApplication.ImagePixelType_int32,
+             "unsigned_int": otbApplication.ImagePixelType_uint32,
+             "float": otbApplication.ImagePixelType_float,
+             "double": otbApplication.ImagePixelType_double}
+
 parser = argparse.ArgumentParser()
-
-
-def get_encoding():
-    """
-    Get the encoding of input image pixels
-    """
-    infos = otbApplication.Registry.CreateApplication('ReadImageInfo')
-    infos.SetParameterString("in", params.input)
-    infos.Execute()
-    return infos.GetImageBasePixelType("in")
-
-
-encodings = {"auto": get_encoding,
-             "uint8": lambda: otbApplication.ImagePixelType_uint8,
-             "uint16": lambda: otbApplication.ImagePixelType_uint16,
-             "int16": lambda: otbApplication.ImagePixelType_int16,
-             "float": lambda: otbApplication.ImagePixelType_float}
-
 parser.add_argument("--input", help="Input LR image. Must be in the same dynamic as the lr_patches used in the "
                                     "train.py application.", required=True)
 parser.add_argument("--savedmodel", help="Input SavedModel (provide the path to the folder).", required=True)
@@ -38,6 +28,16 @@ parser.add_argument('--ts', default=512, type=int, help="Tile size. Tune this to
 params = parser.parse_args()
 
 
+def get_encoding_name():
+    """
+    Get the encoding of input image pixels
+    """
+    infos = otbApplication.Registry.CreateApplication('ReadImageInfo')
+    infos.SetParameterString("in", params.input)
+    infos.Execute()
+    return infos.GetParameterString("datatype")
+
+
 if __name__ == "__main__":
 
     gen_fcn = params.pad
@@ -49,8 +49,10 @@ if __name__ == "__main__":
     rfield = int((efield + 2 * gen_fcn) * ratio)  # OTBTF receptive field
 
     # pixel encoding
-    encoding_fn = encodings[params.encoding]
-    encoding = encoding_fn()
+    encoding = params.encoding
+    if encoding == "auto":
+        encoding = encodings[get_encoding_name()]
+    logging.info("Using encoding %s", encoding)
 
     # call otbtf
     logging.info("Receptive field: {}, Expression field: {}".format(rfield, efield))
