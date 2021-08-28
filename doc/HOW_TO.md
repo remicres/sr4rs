@@ -127,3 +127,8 @@ python sr.py \
 --savedmodel /path/to/savedmodel \
 --output Sentinel-2_B4328_2.5m.tif
 ```
+
+#### Useful parameters
+- Depending on your hardware, you can set the memory footprint using the parameter `--ts` (as **t**ile **s**ize). Use large tile size to speed-up the process. If the tile size is too large, TensorFlow will likely throw an OOM (out of memory) exception. **Note the the default value (512) is quite small, and you will like to manually change that value to gain a great speed-up** for instance on an old GTX1080Ti (12Gb RAM) you can use 1024.
+- Change the output image encoding using the `--encoding` parameter. e.g for Sentinel-2 images you can use `--encoding int16`.
+- The image generation process avoids blocking artifacts in the generated output image. Use the `--pad` parameter to change the margin used to keep the pseudo-valid region, in spatial dimensions, of the output tensor.
