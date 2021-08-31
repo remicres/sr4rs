@@ -49,8 +49,8 @@ if __name__ == "__main__":
     rfield = int((efield + 2 * gen_fcn) * ratio)  # OTBTF receptive field
 
     # pixel encoding
-    encoding_key = get_encoding_name() if encoding_key == "auto" else params.encoding
-    encoding = encodings[encoding_key]
+    encoding_name = get_encoding_name() if params.encoding == "auto" else params.encoding
+    encoding = encodings[encoding_name]
     logging.info("Using encoding %s", encoding)
 
     # call otbtf
