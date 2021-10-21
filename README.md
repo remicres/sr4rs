@@ -42,9 +42,9 @@ SR4RS needs **OTBTF>=2.3** to work.
 
 ### Quick HR image generation using pre-trained model
 
-1. Get the latest OTBTF docker image and enter the docker image. Use the nice and lightweight builds done by Vincent@LaTelescop (see [here](https://gitlab.com/latelescop/docker/otbtf/container_registry/) to see all flavours). Here is an example with the otbtf gpu:2.3-dev image, using NVIDIA runtime:
+1. Get the latest OTBTF docker image and enter the docker image.  Here is an example with the otbtf 2.5 gpu image, using NVIDIA runtime:
 ```
-docker run -ti --runtime=nvidia registry.gitlab.com/latelescop/docker/otbtf/gpu:2.3-dev bash
+docker run -ti --runtime=nvidia mdl4eo/otbtf2.5:gpu bash
 ```
 
 2. Download and unzip a pre-trained SavedModel (see [this section](doc/PRETRAINED_MODELS.md) to see available pre-trained models)
