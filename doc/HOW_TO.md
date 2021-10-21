@@ -73,6 +73,8 @@ The LR and HR images have the same number of bands, ordered in the same followin
 
 ### Step 2: train your network
 
+Use `train.py` to train a super-resolution network and export the SavedModel.
+**A (known bug)[https://github.com/remicres/sr4rs/issues/36] affects the training when `--streaming` is not used, for OTBTF versions < 2.5. Use `--streaming` in this case!**
 Well, here you might want to play with the parameters. The result will depend likely on your images!
 Play with `l1weight`, `l2weight`, `vggweight` (if you provide the VGG weights).
 Check in tensorboard the dynamic of your losses during training, and of course the preview image.
