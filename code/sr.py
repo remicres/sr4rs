@@ -70,7 +70,7 @@ if __name__ == "__main__":
     infer.SetParameterInt("optim.tilesizex", efield)
     infer.SetParameterInt("optim.tilesizey", efield)
     infer.SetParameterInt("optim.disabletiling", 1)
-    out_fn = params.output
+    out_fn = "{}{}".format(params.output, "?" if "?" not in params.output else "")
     out_fn += "?&streaming:type=tiled&streaming:sizemode=height&streaming:sizevalue={}".format(efield)
     infer.SetParameterString("out", out_fn)
     infer.SetParameterOutputImagePixelType("out", encoding)
