@@ -36,7 +36,6 @@ Karnewar et Al. (multi scale gradient)
 }
 ```
 
-
 ## How to install
 
 Use the [OTBTF Docker image](https://github.com/remicres/otbtf#how-to-install) with version >= 2.0.
@@ -72,6 +71,8 @@ Note that we do not normalize or change anything in the images dynamics (encodin
 The LR and HR images have the same number of bands, ordered in the same following fashion: Red=channel1, Green=channel2, Blue=channel3 (you can add some other spectral bands after the 3rd channel, but they must be in the same order in both LR and HR images. For instance here we put the near infrared band as the 4th channel).
 
 ### Step 2: train your network
+
+![](train.png)
 
 Use `train.py` to train a super-resolution network and export the SavedModel.
 **A (known bug)[https://github.com/remicres/sr4rs/issues/36] affects the training when `--streaming` is not used, for OTBTF versions < 2.5. Use `--streaming` in this case!**
@@ -114,12 +115,23 @@ python train.py \
 --lr_scale 0.0001 --hr_scale 0.0001 \
 --savedmodel /path/to/savedmodel
 ```
-This gave me some cool results, but you might find some settings better suited to your images.
+These settings helped to generate good looking images from our Sentinel-2 products. 
+Since this is quite subjective, other settings might be better suited, depending on your images.
 The important thing is, after the training is complete, the SavedModel will be generated in `/path/to/savedmodel`.
 Take care not to use an existing folder for `--savedmodel`, else TensorFlow will cancel the save. You must provide a non-existing folder for this one.
 Note that you can provide multiple HR and LR patches: just be sure that there is the same number of patches images, in the same order. Use the `--streaming` option if this takes too much RAM.
 
+#### How to chose the training parameters?
+
+Here are a few rules of thumb to follow:
+- use `lr_scale` and `hr_scale` so that the images pixels values range is generally in the [0, 1] interval,
+- use small `depth` and `nresblocks` to train a small model: this would be useful if you have small dataset, or low GPU memory budget.
+- Play with `batchsize` and `adam_lr` to train your model. The outcome mostly depends on the distribution of your data. Generally, a small batch size helps (4, 8, 16) and a learning rate in the 10e-2 and 10e-5 range.
+- `l1weight`, `l2weight`, `vggweight`: tune these parameters so that their contribution is in the same magnitude as the GAN loss.
+
 ### Step 3: generate your fake HR images
+
+![](inference.png)
 
 Now we use OTBTF `TensorFlowModelServe` application through `sr.py`.
 We just apply our SavedModel to a LR image, and transform it in a fake HR image.
@@ -131,6 +143,8 @@ python sr.py \
 ```
 
 #### Useful parameters
+
 - Depending on your hardware, you can set the memory footprint using the parameter `--ts` (as **t**ile **s**ize). Use large tile size to speed-up the process. If the tile size is too large, TensorFlow will likely throw an OOM (out of memory) exception. **Note the the default value (512) is quite small, and you will like to manually change that value to gain a great speed-up** for instance on an old GTX1080Ti (12Gb RAM) you can use 1024.
 - Change the output image encoding using the `--encoding` parameter. e.g for Sentinel-2 images you can use `--encoding int16`.
 - The image generation process avoids blocking artifacts in the generated output image. Use the `--pad` parameter to change the margin used to keep the pseudo-valid region, in spatial dimensions, of the output tensor.
+
