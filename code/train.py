@@ -1,3 +1,24 @@
+"""
+Copyright (c) 2020-2022 Remi Cresson (INRAE)
+
+Permission is hereby granted, free of charge, to any person obtaining a 
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+"""
 # Imports
 from tricks import tf
 import datetime
@@ -219,6 +240,7 @@ def main(unused_argv):
                 return ""
             return "_{}{}".format(key, value)
 
+        # Summary file name (include all settings in the name)
         now = datetime.datetime.now()
         summaries_fn = "SR4RS"
         summaries_fn += _append_desc("E", params.epochs)
@@ -242,10 +264,12 @@ def main(unused_argv):
         if params.logdir is not None:
             train_writer = tf.summary.FileWriter(params.logdir + summaries_fn, sess.graph)
 
+        # Helper to write the summary
         def _add_summary(summarized, _step):
             if train_writer is not None:
                 train_writer.add_summary(summarized, _step)
 
+        # Weights initialization
         sess.run(init)
         if params.load_ckpt is not None:
             saver.restore(sess, params.load_ckpt)
@@ -257,6 +281,7 @@ def main(unused_argv):
                 _add_summary(summary_pe, _step)
 
 
+        # Helper to train the model
         def _do(_train_op, _summary_op, name):
             global step
             for curr_epoch in range(params.epochs):

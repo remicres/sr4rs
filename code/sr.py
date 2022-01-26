@@ -1,3 +1,24 @@
+"""
+Copyright (c) 2020-2022 Remi Cresson (INRAE)
+
+Permission is hereby granted, free of charge, to any person obtaining a 
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+"""
 import argparse
 import otbApplication
 import constants
@@ -6,6 +27,7 @@ import logging
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.WARNING,
                     datefmt='%Y-%m-%d %H:%M:%S')
 
+# Available encodings in OTB
 encodings = {"unsigned_char": otbApplication.ImagePixelType_uint8,
              "short": otbApplication.ImagePixelType_int16,
              "unsigned_short": otbApplication.ImagePixelType_uint16,
@@ -14,6 +36,7 @@ encodings = {"unsigned_char": otbApplication.ImagePixelType_uint8,
              "float": otbApplication.ImagePixelType_float,
              "double": otbApplication.ImagePixelType_double}
 
+# Arguments parsing
 parser = argparse.ArgumentParser()
 parser.add_argument("--input", help="Input LR image. Must be in the same dynamic as the lr_patches used in the "
                                     "train.py application.", required=True)
@@ -40,7 +63,7 @@ def get_encoding_name():
 
 if __name__ == "__main__":
 
-    gen_fcn = params.pad
+    gen_fcn = params.pad  # Available shrinked outputs
     efield = params.ts  # OTBTF expression field
     if efield % min(constants.factors) != 0:
         logging.fatal("Please chose a tile size that is consistent with the network.")
@@ -75,3 +98,4 @@ if __name__ == "__main__":
     infer.SetParameterString("out", out_fn)
     infer.SetParameterOutputImagePixelType("out", encoding)
     infer.ExecuteAndWriteOutput()
+

@@ -1,3 +1,24 @@
+"""
+Copyright (c) 2020-2022 Remi Cresson (INRAE)
+
+Permission is hereby granted, free of charge, to any person obtaining a 
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+"""
 from tricks import tf
 from functools import partial
 import numpy as np
@@ -7,7 +28,7 @@ lrelu = partial(tf.nn.leaky_relu, alpha=0.2)
 
 def get_weight(shape, gain=np.sqrt(2), lrmul=1):
     """
-    Get weight
+    Get weight, or return a new variable for weight
     """
     fan_in = np.prod(shape[:-1])
     he_std = gain / np.sqrt(fan_in)  # He init
@@ -22,7 +43,7 @@ def get_weight(shape, gain=np.sqrt(2), lrmul=1):
 
 def apply_bias(x):
     """
-    Apply bias
+    Apply bias to the input
     """
     b = tf.compat.v1.get_variable('bias', shape=[x.shape[-1]], initializer=tf.keras.initializers.zeros())
     b = tf.cast(b, x.dtype)
@@ -35,7 +56,7 @@ def apply_bias(x):
 def conv_base(x, fmaps, kernel_size, stride, name, gain=np.sqrt(2), activation_fn=None, normalizer_fn=None,
               transpose=False, padding='SAME'):
     """
-    Convolutional layer base.
+    Convolutional layer base
     """
     assert (isinstance(name, str))
     with tf.compat.v1.variable_scope(name):
@@ -82,6 +103,9 @@ def _blur2d(x, stride=1, flip=False):
 
 
 def minibatch_stddev_layer(x, group_size=4):
+    """
+    Mini-batch standard deviation layer
+    """
     with tf.compat.v1.variable_scope('MinibatchStd'):
         group_size = tf.minimum(group_size, tf.shape(x)[0])
         sz1 = tf.shape(x)[1]
@@ -99,12 +123,18 @@ def minibatch_stddev_layer(x, group_size=4):
 
 
 def pixel_norm(x):
+    """
+    Pixel normalization
+    """
     with tf.compat.v1.variable_scope("PixelNorm"):
         epsilon = tf.constant(1e-8, dtype=x.dtype, name="epsilon")
         return x * tf.math.rsqrt(tf.reduce_mean(tf.square(x), axis=-1, keepdims=True) + epsilon)
 
 
 def conv2d_downscale2d(x, fmaps, kernel, name):
+    """
+    Conv2D + downscaling
+    """
     assert kernel >= 1 and kernel % 2 == 1
     with tf.compat.v1.variable_scope(name):
         w = get_weight([kernel, kernel, x.shape[3].value, fmaps])
@@ -115,6 +145,9 @@ def conv2d_downscale2d(x, fmaps, kernel, name):
 
 
 def upscale2d_conv2d(x, fmaps, kernel, name):
+    """
+    Upscaling with transposed conv2D
+    """
     assert kernel >= 1 and kernel % 2 == 1
     with tf.compat.v1.variable_scope(name):
         w = get_weight([kernel, kernel, x.shape[3].value, fmaps])
@@ -130,6 +163,9 @@ def upscale2d_conv2d(x, fmaps, kernel, name):
 
 
 def _upscale2d(x, factor=2, gain=1):
+    """
+    Nearest-neighborhood based upscaling
+    """
     if gain != 1:
         x *= gain
 
@@ -144,6 +180,9 @@ def _upscale2d(x, factor=2, gain=1):
 
 
 def _downscale2d(x, factor=2, gain=1):
+    """
+    Average-pooling + blur based downscaling
+    """
     if gain != 1:
         x *= gain
 
@@ -158,6 +197,9 @@ def _downscale2d(x, factor=2, gain=1):
 
 
 def blur2d(x):
+    """
+    Blur with custom gradient
+    """
     with tf.compat.v1.variable_scope("Blur2D"):
         @tf.custom_gradient
         def func(in_x):
@@ -174,6 +216,9 @@ def blur2d(x):
 
 
 def upscale2d(x, factor=2):
+    """
+    Upscaling with custom gradient
+    """
     with tf.compat.v1.variable_scope("Upscale2D"):
         @tf.custom_gradient
         def func(in_x):
@@ -190,6 +235,9 @@ def upscale2d(x, factor=2):
 
 
 def downscale2d(x, factor=2):
+    """
+    Downscaling with custom gradient
+    """
     with tf.compat.v1.variable_scope("Downscale2D"):
         @tf.custom_gradient
         def func(in_x):
