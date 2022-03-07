@@ -3,25 +3,27 @@
 An open source tool for super resolution.
 You can add your own models, cost functions, feel free to open a PR!
 
+## Cite
+
+http://doi.org/10.5334/jors.369
+
+```
+@article{cresson2022sr4rs,
+  title={SR4RS: A Tool for Super Resolution of Remote Sensing Images},
+  author={Cresson, R{\'e}mi},
+  journal={Journal of Open Research Software},
+  volume={10},
+  number={1},
+  year={2022},
+  publisher={Ubiquity Press}
+}
+```
+
 ## Super Resolution for Remote Sensing
 
 This work has been supported by the Programme National de Télédétection Spatiale ([PNTS](http://programmes.insu.cnrs.fr/pnts/)), grant n° PNTS-2020-07 
 
 <img src ="doc/logos.jpg" />
-
-## Cite
-
-```
-@misc{sr4rs2021,
-  author = {Cresson, R.},
-  title = {Super Resolution for Remote Sensing},
-  year = {2021},
-  publisher = {GitHub},
-  journal = {GitHub repository},
-  howpublished = {\url{https://github.com/remicres/sr4rs}},
-  commit = {28792f2ed0b45c6f66abf9cb9cfa4a5d8e58d511}
-}
-```
 
 ## Representative images
 
