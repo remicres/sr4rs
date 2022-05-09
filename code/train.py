@@ -132,7 +132,7 @@ def main(unused_argv):
                             nresblocks=params.nresblocks, dim=params.depth)
         discriminator = partial(network.discriminator, scope=constants.dis_scope, dim=params.depth)
 
-        hr_images_real = {factor: params.hr_scale * tf.cast(downscale2d(hr_image, factor=factor), tf.float32) 
+        hr_images_real = {factor: params.hr_scale * downscale2d(tf.cast(hr_image, tf.float32), factor=factor) 
                           for factor in constants.factors}
         hr_images_fake = generator(params.lr_scale * tf.cast(lr_image, tf.float32))
 
