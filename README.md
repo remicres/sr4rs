@@ -32,8 +32,6 @@ The following are Sentinel-2 images processed with a model trained from pansharp
 <img src ="doc/c2.jpg" />
 <img src ="doc/c1.jpg" />
 
-[Look at the entire Sentinel-2 image processed over the Montpellier area](https://remicres.github.io/super-resolution) (Image is resampled in another cartographic projection, which might distord a bit the nice result!).
-
 ## Read more
 
 Blog post on [MDL4EO](https://mdl4eo.irstea.fr/2019/03/29/enhancement-of-sentinel-2-images-at-1-5m/)
