@@ -38,7 +38,7 @@ Karnewar et Al. (multi scale gradient)
 
 ## How to install
 
-Use the [OTBTF Docker image](https://github.com/remicres/otbtf#how-to-install) with version >= 2.0.
+Use the [OTBTF Docker image]([https://github.com/remicres/otbtf#how-to-install](https://otbtf.readthedocs.io/en/latest/docker_use.html)) with version >= 2.0.
 Clone this repository anywhere inside your docker.
 
 ## How to use
@@ -75,7 +75,11 @@ The LR and HR images have the same number of bands, ordered in the same followin
 ![](train.png)
 
 Use `train.py` to train a super-resolution network and export the SavedModel.
-**A (known bug)[https://github.com/remicres/sr4rs/issues/36] affects the training when `--streaming` is not used, for OTBTF versions < 2.5. Use `--streaming` in this case!**
+
+> **Warning**
+> 
+> A [known bug](https://github.com/remicres/sr4rs/issues/36) affects the training when `--streaming` is not used, for OTBTF versions < 2.5. Use `--streaming` in this case!
+
 Well, here you might want to play with the parameters. The result will depend likely on your images!
 Play with `l1weight`, `l2weight`, `vggweight` (if you provide the VGG weights).
 Check in tensorboard the dynamic of your losses during training, and of course the preview image.
