@@ -24,9 +24,9 @@ import argparse
 from functools import partial
 import logging
 
+import otbtf
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
-import otbtf
  
 from ops import downscale2d
 from vgg import compute_vgg_loss
