@@ -19,8 +19,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
-from tricks import tf
 from functools import partial
+
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
+
 from ops import conv, lrelu, conv2d_downscale2d, upscale2d_conv2d, blur2d, pixel_norm
 from ops import minibatch_stddev_layer
 

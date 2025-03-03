@@ -19,13 +19,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
-# Imports
-from tricks import tf
 import datetime
 import argparse
 from functools import partial
-import otbtf
 import logging
+
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
+import otbtf
+ 
 from ops import downscale2d
 from vgg import compute_vgg_loss
 import network

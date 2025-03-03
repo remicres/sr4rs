@@ -19,9 +19,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 """
-from tricks import tf
 from functools import partial
+
 import numpy as np
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
+
 
 lrelu = partial(tf.nn.leaky_relu, alpha=0.2)
 
